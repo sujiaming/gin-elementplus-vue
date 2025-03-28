@@ -11,7 +11,7 @@ import { defineConfig } from 'vite'
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
-    outDir: '../static' // 修改输出目录为gin的静态模块目录
+    outDir: '../public' // 修改输出目录为gin的静态模块目录
   },
   resolve: {
     alias: {

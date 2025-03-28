@@ -10,16 +10,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//go:embed static/*
+//go:embed public/*
 var staticFiles embed.FS
 
 func main() {
+
+	// 设置Gin为Release模式
+	// gin.SetMode(gin.ReleaseMode)
 	// 初始化数据库
 	database.InitDB()
 	r := gin.Default()
-
+	// 设置信任的代理 IP，不加信任全部
+	r.SetTrustedProxies([]string{"127.0.0.1"})
 	// 添加 CORS 中间件（解决跨域问题）
-	// r.Use(corsMiddleware())
+	r.Use(corsMiddleware())
 
 	// 静态资源路由
 	r.GET("/assets/*filepath", serveStatic)
@@ -50,15 +54,15 @@ func main() {
 func serveStatic(c *gin.Context) {
 	path := c.Request.URL.Path
 	if path == "/" {
-		path = "static/index.html"
+		path = "public/index.html"
 	} else {
-		path = "static" + path
+		path = "public" + path
 	}
 
 	data, err := staticFiles.ReadFile(path)
 	if err != nil {
 		// 返回 index.html 以支持前端路由
-		data, _ = staticFiles.ReadFile("static/index.html")
+		data, _ = staticFiles.ReadFile("public/index.html")
 	}
 
 	// 手动设置 Content-Type
